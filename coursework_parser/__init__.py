@@ -1,13 +1,17 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+import urllib3
+
+urllib3.disable_warnings()
 
 '''https://kubsau.ru/education/portfolio/students/1c078a6e-3b5f-4e37-b551-65bfe3ebb28f/ - тестовый url студента
    https://kubsau.ru/education/portfolio/groups/c27cda9c-e5af-47e2-874e-78084a2d0e94/ - тестовый url группы
 '''
 
 
-def parse_student(url: str) -> dict:
+def parse_portfolio(stud_id: str) -> dict:
+    url = f'https://kubsau.ru/education/portfolio/students/{stud_id}'
     response = requests.get(url, verify=False)  # kringe but working...
     resp_date = response.text if response.status_code == 200 else response.raise_for_status()
     soup = BeautifulSoup(resp_date, 'html.parser')
@@ -20,10 +24,11 @@ def parse_student(url: str) -> dict:
     return works_dict
 
 
-def get_students(url: str) -> dict:
+def get_students(group_id: str) -> dict:
+    url = f'https://kubsau.ru/education/portfolio/groups/{group_id}'
     response = requests.get(url, verify=False)  # kringe but working...
     resp_date = response.text if response.status_code == 200 else response.raise_for_status()
-    soup = BeautifulSoup(resp_date,'html.parser')
+    soup = BeautifulSoup(resp_date, 'html.parser')
     group_ids_teg = soup.find('div', class_='page-content').find_all('li')
     students_dict = {}
 
@@ -33,4 +38,17 @@ def get_students(url: str) -> dict:
         students_dict[student_id] = {'name': student_name}
     return students_dict
 
-print(get_students('https://kubsau.ru/education/portfolio/groups/c27cda9c-e5af-47e2-874e-78084a2d0e94/'))
+
+def find_coursework(group_id: str, desired_topic: str):
+    students = get_students(group_id)
+    found_students = [{'student_id': key, 'name': students[key]['name'], 'title': subject} for key in students.keys()
+                      for subject in parse_portfolio(key).values() if desired_topic in subject]
+    return found_students
+
+
+print(find_coursework('c27cda9c-e5af-47e2-874e-78084a2d0e94',
+                      'Реализация алгоритмов построения трехмерных геометрических фигур'))
+
+
+
+
