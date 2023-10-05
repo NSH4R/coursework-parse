@@ -45,10 +45,3 @@ def find_coursework(group_id: str, desired_topic: str):
                       for subject in parse_portfolio(key).values() if desired_topic in subject]
     return found_students
 
-
-print(find_coursework('c27cda9c-e5af-47e2-874e-78084a2d0e94',
-                      'Реализация алгоритмов построения трехмерных геометрических фигур'))
-
-
-
-
