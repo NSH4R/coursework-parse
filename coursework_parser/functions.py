@@ -45,3 +45,10 @@ def find_coursework(group_id: str, desired_topic: str):
                       for subject in parse_portfolio(key).values() if desired_topic in subject]
     return found_students
 
+
+print(find_coursework('90dfc605-d7f3-49d0-9ff3-2737b908ebac',
+                      'Разработка информационной  системы  для автоматизации  подготовки, хранения и выдачи на печать платежного требования'))
+print(find_coursework('d30a74aa-0dfb-4abc-bc0c-2c254ed361c2',
+                      'Разработка информационной  системы  для автоматизации  подготовки, хранения и выдачи на печать платежного требования'))
+print(find_coursework('f5e1fe2c-4e8a-41bc-bbdd-796945b598ca',
+                      'Разработка информационной  системы  для автоматизации  подготовки, хранения и выдачи на печать платежного требования'))
